@@ -54,7 +54,7 @@ body {
     line-height: 1.6rem;
     min-height: 100%;
     display: flex;
-    background: url("../images/thumb_wall.gif") repeat 19px #6368B1;
+    background-color: #B7B687;
 }
 
 #page-wrapper {
@@ -131,11 +131,15 @@ a:active {
     flex-flow: column;
 }
 
+#form-area {
+    margin-top: 228px;
+    width: 100%
+}
+
 form {
     position: relative;
     left: 30px;
     width: 520px;
-    margin-top: 228px;
     border-radius: 16px;
 }
 
@@ -144,18 +148,19 @@ form {
     width: 400px;
     padding: 10px 15px;
     background: rgba(50, 50, 50, 0.9);
-    border: 2px solid rgba(179, 111, 247, 1);
+    border: solid 3px #8270D2;
+    /* border: 2px solid rgba(179, 111, 247, 1); */
     border-radius: 16px;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: rgb(255, 218, 223) !important;
-    font-size: 16.8px;
+    font-size: 16px;
 }
 
 .buttons {
     position: relative;
     left: -1px;
     padding: 5px 15px;
-    border: 1px solid #207cca;
+    border: 3px solid #8270D2;
     border-radius: 16px;
     background-color: #a252f2;
     color: #fafafa;
@@ -163,13 +168,13 @@ form {
 
 .buttons:hover {
     background-color: #8d38e2;
-    border: 1px solid #2058c9;
+    border: solid 3px #8270D2;
     color: #fafafa;
 }
 
 .buttons:active {
-    background-color: #8d38e2;
-    border: 1px solid white;
+    background-color: #7431b7;
+    border: solid 3px #8270D2;
     color: #fafafa;
 }
 
@@ -180,13 +185,13 @@ form {
     flex-direction: column;
     width: 210px;
     height: 150px;
-    border: solid 0px red;
+    border: solid 0 red;
 }
 
 label {
     width: 180px;
     background: rgba(50, 50, 50, 0.9);
-    border: 2px solid rgba(179, 111, 247, 1);
+    border: solid 2px #8270D2;
     border-radius: 5px;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: #A9A9A9 !important;
