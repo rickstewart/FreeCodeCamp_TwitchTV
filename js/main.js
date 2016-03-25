@@ -7,17 +7,31 @@
  *
  */
 'use strict';
-function wikipediaViewerMain() {
+function twitchTvMain() {
+
+	/* function search() makes the actual JSONP query to Wikipedia. It first builds the query string, then
+	 * submits the query, and finally upon receiving back the search results passes these results to
+	 * function displaySearchResults() to update the webpage.*/
+	function getStreamStatus(channelName) {
+		var baseURL = 'https://api.twitch.tv/kraken/streams/';
+		var streamStatusURL = baseURL + channelName + '?callback=?';
+		$.getJSON(streamStatusURL, {})
+			.done(function (data) {
+				console.log(JSON.stringify(data, null, 2));
+			});
+	}
+	getStreamStatus('FreeCodeCamp');
 }
 
 /* function runs main script when page has loaded. Program entry point. */
 $(document).ready(function () {
-	wikipediaViewerMain();
+	twitchTvMain();
 });
 
 
+
 // 'use strict';
-// function wikipediaViewerMain() {
+// function twitchTvMain() {
 // var searchBox = document.getElementById('search-box');
 // var randomURL = 'http://en.wikipedia.org/wiki/Special:Random';
 // var searchURL = 'http://en.wikipedia.org/w/api.php?callback=?';
@@ -126,6 +140,6 @@ $(document).ready(function () {
 //
 ///* function runs main script when page has loaded. Program entry point. */
 //$(document).ready(function () {
-//	wikipediaViewerMain();
+//	twitchTvMain();
 //});
 //
