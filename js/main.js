@@ -8,6 +8,9 @@
  */
 'use strict';
 function twitchTvMain() {
+	var dataStore = [];
+	var channels = ['ESL_SC2','OgamingSC2','FreeCodeCamp','Beohoff','cretetion'];
+	var domRefResponseArea = document.getElementById('response-area');
 
 	/* function search() makes the actual JSONP query to Wikipedia. It first builds the query string, then
 	 * submits the query, and finally upon receiving back the search results passes these results to
@@ -17,10 +20,27 @@ function twitchTvMain() {
 		var streamStatusURL = baseURL + channelName + '?callback=?';
 		$.getJSON(streamStatusURL, {})
 			.done(function (data) {
-				console.log(JSON.stringify(data, null, 2));
+				/*return JSON.stringify(data, null, 2);*/
+				var channelResponse = JSON.stringify(data, null, 2);
+				parseResponse(channelResponse);      // has to go here - async callback hell.
 			});
 	}
-	getStreamStatus('FreeCodeCamp');
+
+	var parseResponse = function(channelResponse) {
+		if(channelResponse.status === 422) {return 'Channel No Longer Available';}
+		else if(channelResponse.stream === null) {return 'Channel is Offline';}
+		else{return channelResponse.channel.status;}
+	};
+
+	var displayResults = function() {
+		channels.map(function(channel) {
+			dataStore.push(parseResponse(channel));
+		});
+		domRefResponseArea.innerHTML = JSON.stringify(dataStore, null, 2);
+	};
+
+	getStreamStatus();
+	displayResults();
 }
 
 /* function runs main script when page has loaded. Program entry point. */
@@ -28,7 +48,7 @@ $(document).ready(function () {
 	twitchTvMain();
 });
 
-
+//TODO: implement 60 second data refresh indicator
 
 // 'use strict';
 // function twitchTvMain() {
