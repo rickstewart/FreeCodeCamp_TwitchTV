@@ -30,10 +30,13 @@ function twitchTvMain() {
 	};
 
 	/* function queryChannelByJsonp() is passed a TwitchTV channel name, performs a JSON-P query of that
-	 * channel, and returns the TwitchTV response upon success, or an error message upon a failure. */
+	 * channel, and returns TwitchTV's response upon success, or an error message upon a failure. The
+	 * first .getJSON() query uses the 'streams' parameter, then after results have returned the second
+	 * nested .getJSON query is called using the 'channels' parameter to fetch the channel's logo graphic.*/
 	function queryChannelByJsonp(channel) {
-		var baseStreamsURL = 'https://api.twitch.tv/kraken/streams/';
-		var baseChannelsURL = 'https://api.twitch.tv/kraken/channels/';
+		var baseStreamsURL = 'https://api.twitch.tv/kraken/streams/';  // using 'streams' parameter.
+		var baseChannelsURL = 'https://api.twitch.tv/kraken/channels/';  // using 'channels' parameter.
+		var fallbackImage = 'url("../images/twitch-symbol2.jpg")';
 		var streamsData;
 		var channelsData;
 		var allData = {};
@@ -41,35 +44,50 @@ function twitchTvMain() {
 		var channelsStatusURL = baseChannelsURL + channel + '?callback=?';
 		$.getJSON(streamsStatusURL, {}) // TwitchTV query using 'streams' parameter.
 			.done(function (data) {
-				streamsData = parseResponse(data);  // process streams response.
-				allData.message = streamsData.message;
-				allData.status = streamsData.status;
+				streamsData = parseResponse(data);
+				allData.message = streamsData.message; // add new property 'message'.
+				allData.status = streamsData.status;   // add new property 'status'.
+				$.getJSON(channelsStatusURL, {}, displayUpdateResults(channel, allData)) // displayUpdateResults() as callback avoids async issue.
+						.done(function (data) {
+							if(data.logo === null) {
+								channelsData = {'icon': fallbackImage};
+							}
+							else {
+								channelsData = {'icon': 'url("' + data.logo + '")'};
+							}
+							allData.icon = channelsData.icon;
+						})
+						.fail(function () {
+							channelsData = {'icon': fallbackImage};
+							allData.icon = channelsData.icon;
+						});
 			})
 			.fail(function () {
 				streamsData = {'message': 'Oops, something went wrong querying this channel...', 'status': 'offline'};
 				allData.message = streamsData.message;
 				allData.status = streamsData.status;
+				$.getJSON(channelsStatusURL, {}, displayUpdateResults(channel, allData)) // displayUpdateResults() as callback avoids async issue.
+						.done(function (data) {
+							channelsData = data.logo === null ? {'icon': fallbackImage} : {'icon': 'url("' + data.logo + '")'};
+							allData.icon = channelsData.icon;
+						})
+						.fail(function () {
+							channelsData = {'icon': fallbackImage};
+							allData.icon = channelsData.icon;
+						});
 			});
-		$.getJSON(channelsStatusURL, {}, displayUpdateResults(channel, allData))// TwitchTV query using 'channels' parameter.
-				.done(function (data) {
-					channelsData = data.logo === null ? {'icon': 'url("../images/twitch-symbol2.jpg")'} : {'icon': 'url("' + data.logo + '")'};
-					allData.icon = channelsData.icon;
-				})
-				.fail(function () {
-					channelsData = {'icon': 'url("../images/twitch-symbol2.jpg")'};
-					allData.icon = channelsData.icon;
-				});
 	}
 
 	/* function displayUpdateResults() formats the result of a channel query and outputs the information
 	 * to the webpage. */
 	function displayUpdateResults(channel, channelData) {
-		var $div = $('<div>', {id: channel, class: 'response'}); // set format for new div.
-		$('#response-area').append($div);                     // create new div in container.
-		var str = '<p>Channel: ' + '<span class="highlight">' + channel + '<br>' + '</span>'  + channelData.message + '</p>';  // build article summary.
-		$(str).appendTo('#' + channel);           // add article summary to the new div.
+		var $div = $('<div>', {id: channel, class: 'response ' + channelData.status});
+		$('#response-area').append($div);
+		var str = '<img src="' + channelData.icon + '">' + '<p>Channel: ' + '<span class="highlight">' + channel + '<br>' + '</span>'  + channelData.message + '</p>';
+		$(str).appendTo('#' + channel);
 	}
-	/* run initial queries  */
+
+	/* run initial TwitchTV queries  */
 	refreshChannelData();
 }
 
