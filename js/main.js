@@ -36,44 +36,27 @@ function twitchTvMain() {
 	function queryChannelByJsonp(channel) {
 		var baseStreamsURL = 'https://api.twitch.tv/kraken/streams/';  // using 'streams' parameter.
 		var baseChannelsURL = 'https://api.twitch.tv/kraken/channels/';  // using 'channels' parameter.
-		var fallbackImage = 'url("../images/twitch-symbol2.jpg")';
+		var fallbackImage = './images/twitch-symbol2.jpg';
 		var streamsData;
 		var channelsData;
 		var allData = {};
 		var streamsStatusURL = baseStreamsURL + channel + '?callback=?';
 		var channelsStatusURL = baseChannelsURL + channel + '?callback=?';
-		$.getJSON(streamsStatusURL, {}) // TwitchTV query using 'streams' parameter.
+		$.getJSON(streamsStatusURL, {})
 			.done(function (data) {
 				streamsData = parseResponse(data);
 				allData.message = streamsData.message; // add new property 'message'.
 				allData.status = streamsData.status;   // add new property 'status'.
-				$.getJSON(channelsStatusURL, {}, displayUpdateResults(channel, allData)) // displayUpdateResults() as callback avoids async issue.
+				$.getJSON(channelsStatusURL, {})
 						.done(function (data) {
 							if(data.logo === null) {
 								channelsData = {'icon': fallbackImage};
 							}
 							else {
-								channelsData = {'icon': 'url("' + data.logo + '")'};
+								channelsData = {'icon': data.logo};
 							}
 							allData.icon = channelsData.icon;
-						})
-						.fail(function () {
-							channelsData = {'icon': fallbackImage};
-							allData.icon = channelsData.icon;
-						});
-			})
-			.fail(function () {
-				streamsData = {'message': 'Oops, something went wrong querying this channel...', 'status': 'offline'};
-				allData.message = streamsData.message;
-				allData.status = streamsData.status;
-				$.getJSON(channelsStatusURL, {}, displayUpdateResults(channel, allData)) // displayUpdateResults() as callback avoids async issue.
-						.done(function (data) {
-							channelsData = data.logo === null ? {'icon': fallbackImage} : {'icon': 'url("' + data.logo + '")'};
-							allData.icon = channelsData.icon;
-						})
-						.fail(function () {
-							channelsData = {'icon': fallbackImage};
-							allData.icon = channelsData.icon;
+							displayUpdateResults(channel, allData);
 						});
 			});
 	}
