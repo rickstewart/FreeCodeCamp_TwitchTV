@@ -10,7 +10,7 @@
  */
 'use strict';
 function twitchTvMain() {
-	var channels = ['FreeCodeCamp', 'storbech', 'StreamerHouse', 'terakilobyte', 'noobs2ninjas', 'monstercat',
+	var channels = ['FreeCodeCamp', 'storbeck', 'StreamerHouse', 'terakilobyte', 'noobs2ninjas', 'monstercat',
 		'habathcx', 'RobotCaleb', 'thomasBallinger', 'beohoff', 'MedryBW', 'riotgames'];
 
 	/* function refreshChannelData() calls queryChannelByJsonp() once for each channel being tracked. */
@@ -24,13 +24,13 @@ function twitchTvMain() {
 	 * state ( ie. online, offline, unavailable ) and if online it captures a channel description summary.
 	 * Lastly it returns the gathered information as an object. */
 	var parseResponse = function(channelResponse) {
-		if(channelResponse.status === 422) {return {'message': 'Channel No Longer Available', 'status': 'offline', };}
+		if(channelResponse.status === 422) {return {'message': 'Channel No Longer Available', 'status': 'offline',};}
 		else if(channelResponse.stream === null) {return {'message':'Channel is Offline', 'status': 'offline'};}
 		else {return {'message': channelResponse.stream.channel.status, 'status': 'online'};}
 	};
 
 	/* function queryChannelByJsonp() is passed a TwitchTV channel name, performs a JSON-P query of that
-	 * channel, and returns TwitchTV's response upon success, or an error message upon a failure. The
+	 * channel, and upon success returns TwitchTV's response, or on an error message upon a failure. The
 	 * first .getJSON() query uses the 'streams' parameter, then after results have returned the second
 	 * nested .getJSON query is called using the 'channels' parameter to fetch the channel's logo graphic.*/
 	function queryChannelByJsonp(channel) {
@@ -69,6 +69,59 @@ function twitchTvMain() {
 		var str = '<img src="' + channelData.icon + '">' + '<p>Channel: ' + '<span class="highlight">' + channel + '<br>' + '</span>'  + channelData.message + '</p>';
 		$(str).appendTo('#' + channel);
 	}
+
+	function hideOfflineDivs() {
+		var offlineDivs = document.getElementById('response-area').getElementsByClassName('offline');
+		for (var prop in offlineDivs) {
+			if (offlineDivs.hasOwnProperty(prop)) {
+				offlineDivs[prop].style.display = 'none';
+			}
+		}
+	}
+
+	function hideOnlineDivs() {
+		var onlineDivs = document.getElementById('response-area').getElementsByClassName('online');
+		for (var prop in onlineDivs) {
+			if (onlineDivs.hasOwnProperty(prop)) {
+				onlineDivs[prop].style.display = 'none';
+			}
+		}
+	}
+
+	function showOfflineDivs() {
+		var offlineDivs = document.getElementById('response-area').getElementsByClassName('offline');
+		for (var prop in offlineDivs) {
+			if (offlineDivs.hasOwnProperty(prop)) {
+				offlineDivs[prop].style.display = 'flex';
+			}
+		}
+	}
+
+	function showOnlineDivs() {
+		var onlineDivs = document.getElementById('response-area').getElementsByClassName('online');
+		for (var prop in onlineDivs) {
+			if (onlineDivs.hasOwnProperty(prop)) {
+				onlineDivs[prop].style.display = 'flex';
+			}
+		}
+	}
+
+	$('input[type="radio"]').change(function() {
+		if ($(this).is(':checked')) {
+			if(this.id === 'radio1') {
+				showOnlineDivs();
+				showOfflineDivs();
+			}
+			if(this.id === 'radio2') {
+				showOnlineDivs();
+				hideOfflineDivs();
+			}
+			if(this.id === 'radio3') {
+				showOfflineDivs();
+				hideOnlineDivs();
+			}
+		}
+	});
 
 	/* run initial TwitchTV queries  */
 	refreshChannelData();

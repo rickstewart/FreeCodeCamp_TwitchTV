@@ -129,6 +129,8 @@ a:active {
 
 #main-container {
     flex-flow: column;
+    width: 50%;
+    margin: 0 auto;
 }
 
 #form-area {
@@ -149,33 +151,10 @@ form {
     padding: 10px 15px;
     background: rgba(50, 50, 50, 0.9);
     border: solid 3px #8270D2;
-    /* border: 2px solid rgba(179, 111, 247, 1); */
     border-radius: 16px;
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
     color: rgb(255, 218, 223) !important;
     font-size: 16px;
-}
-
-.buttons {
-    position: relative;
-    left: -1px;
-    padding: 5px 15px;
-    border: 3px solid #8270D2;
-    border-radius: 16px;
-    background-color: #a252f2;
-    color: #fafafa;
-}
-
-.buttons:hover {
-    background-color: #8d38e2;
-    border: solid 3px #8270D2;
-    color: #fafafa;
-}
-
-.buttons:active {
-    background-color: #7431b7;
-    border: solid 3px #8270D2;
-    color: #fafafa;
 }
 
 #channel-select-area {
@@ -266,7 +245,7 @@ input[type="radio"]:focus ~ label:before {
     color: #FFDADF;
     width: 90%;
     text-align: left;
-    padding: 20px;
+    padding: 4px;
     border: solid 3px #8270D2;
     border-radius: 16px;
     font-size: 0.9em;
@@ -275,8 +254,17 @@ input[type="radio"]:focus ~ label:before {
 .response img {
     width: 80px;
     height: 80px;
-    margin-right: 20px;border:1px solid rgba(100, 65, 165, 1);
+    margin-right: 20px;
+    border: 1px solid #6441a5;
     border-radius: 20px;
+}
+
+.offline {     /* dynamically added and modified by javascript */
+    display: flex;
+}
+
+.online {      /* dynamically added and modified by javascript */
+    display: flex;
 }
 
 .highlight {
