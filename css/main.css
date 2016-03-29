@@ -267,6 +267,13 @@ input[type="radio"]:focus ~ label:before {
     display: flex;
 }
 
+img.statusImage {
+    position: relative;
+    float: right;
+    width: 30px;
+    height: 80px;
+}
+
 .highlight {
     font-weight: bolder;
 }
