@@ -14,8 +14,8 @@ function twitchTvMain() {
 		'habathcx', 'RobotCaleb', 'thomasBallinger', 'beohoff', 'MedryBW', 'riotgames', 'brunofin'];
 
 	/* function refreshChannelData() calls queryChannelByJsonp() once for each channel being tracked. */
-	var refreshChannelData = function() {
-		channels.map(function(channel) {   // for each channel being followed.
+	var refreshChannelData = function () {
+		channels.map(function (channel) {   // for each channel being followed.
 			queryChannelByJsonp(channel);
 		});
 	};
@@ -23,10 +23,16 @@ function twitchTvMain() {
 	/* function parseResponse() is passed the data from a TwitchTV channel query and determines the channel
 	 * state ( ie. online, offline, unavailable ) and if online it captures a channel description summary.
 	 * Lastly it returns the gathered information as an object. */
-	var parseResponse = function(channelResponse) {
-		if(channelResponse.status === 422) {return {'message': 'Twitch account is Closed', 'status': 'offline'};}
-		else if(channelResponse.stream === null) {return {'message':'Channel is Offline', 'status': 'offline'};}
-		else {return {'message': channelResponse.stream.channel.status, 'status': 'online'};}
+	var parseResponse = function (channelResponse) {
+		if (channelResponse.status === 422) {
+			return {'message': 'Twitch account is Closed', 'status': 'offline'};
+		}
+		else if (channelResponse.stream === null) {
+			return {'message': 'Channel is Offline', 'status': 'offline'};
+		}
+		else {
+			return {'message': channelResponse.stream.channel.status, 'status': 'online'};
+		}
 	};
 
 	/* function queryChannelByJsonp() is passed a TwitchTV channel name, performs a JSON-P query of that
@@ -48,16 +54,16 @@ function twitchTvMain() {
 				allData.message = streamsData.message; // add new property 'message'.
 				allData.status = streamsData.status;   // add new property 'status'.
 				$.getJSON(channelsStatusURL, {})
-						.done(function (data) {
-							if(data.logo === null || data.logo === undefined) {
-								channelsData = {'icon': fallbackImage};
-							}
-							else {
-								channelsData = {'icon': data.logo};
-							}
-							allData.icon = channelsData.icon;
-							displayUpdateResults(channel, allData);
-						});
+					.done(function (data) {
+						if (data.logo === null || data.logo === undefined) {
+							channelsData = {'icon': fallbackImage};
+						}
+						else {
+							channelsData = {'icon': data.logo};
+						}
+						allData.icon = channelsData.icon;
+						displayUpdateResults(channel, allData);
+					});
 			});
 	}
 
@@ -67,7 +73,7 @@ function twitchTvMain() {
 		var $div = $('<div>', {id: channel, class: 'response ' + channelData.status});
 		var channelStatus;
 		$('#response-area').append($div);
-		if(channelData.status === 'online') {
+		if (channelData.status === 'online') {
 			channelStatus = '<img src="./images/online.png" class="statusImage">';
 		}
 		else {
@@ -75,7 +81,7 @@ function twitchTvMain() {
 		}
 		$(channelStatus).appendTo('#' + channel);
 		var str = '<img src="' + channelData.icon + '">' + '<p>Channel: ' + '<span class="highlight">' +
-				channel + '<br>' + '</span>'  + channelData.message + '</p>';
+			channel + '<br>' + '</span>' + channelData.message + '</p>';
 		$(str).appendTo('#' + channel);
 	}
 
@@ -115,27 +121,41 @@ function twitchTvMain() {
 		}
 	}
 
-	$('input[type="radio"]').change(function() {
+	$('input[type="radio"]').change(function () {
 		if ($(this).is(':checked')) {
-			if(this.id === 'radio1') {
+			if (this.id === 'radio1') {
 				showOnlineDivs();
 				showOfflineDivs();
 			}
-			if(this.id === 'radio2') {
+			if (this.id === 'radio2') {
 				showOnlineDivs();
 				hideOfflineDivs();
 			}
-			if(this.id === 'radio3') {
+			if (this.id === 'radio3') {
 				showOfflineDivs();
 				hideOnlineDivs();
 			}
 		}
 	});
-/* http://api.jqueryui.com/autocomplete/ */
-	$(function() {
-		$('#search-box' ).autocomplete({
-			source: channels
-		});
+
+	/*  */
+	var filterChannelList = function (userInput) {
+		var elementRefs = document.getElementById('response-area').children;
+		var builtFilterTerm = '/\b' + userInput + '/';
+		var filterTerm = new RegExp(builtFilterTerm, 'gi');
+		for (var element in elementRefs) {
+			//if (elementRefs.hasOwnProperty(element)) {
+			//	if(!element.match(filterTerm)) {
+			//		element.style.display = 'none';
+			//	}
+			//}
+			console.log(element);}
+
+	};
+
+	$('input[id="search-box"]').keyup(function () {
+		var userInput = $('#search-box').val();
+		filterChannelList(userInput);
 	});
 
 	/* run initial TwitchTV queries  */

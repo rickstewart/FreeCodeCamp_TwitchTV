@@ -268,8 +268,6 @@ input[type="radio"]:focus ~ label:before {
 }
 
 img.statusImage {
-    position: relative;
-    float: right;
     width: 30px;
     height: 80px;
 }
