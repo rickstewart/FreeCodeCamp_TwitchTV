@@ -141,7 +141,7 @@ function twitchTvMain() {
 				}
 			}
 		});
-	
+
 
 	/*  */
 	var filterChannelList = function (userInput) {
@@ -152,6 +152,7 @@ function twitchTvMain() {
 			for (var i = 0; i < undoFilteredChannels.length; i += 1) {
 				undoFilteredChannels[i].style.display = 'flex';
 			}
+			$('input[type="radio"]').trigger('change');
 		}
 		for (var element in elementRefs) {
 			if (elementRefs.hasOwnProperty(element)) {
