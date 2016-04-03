@@ -124,36 +124,38 @@ function twitchTvMain() {
 		}
 	}
 
-	$('input[type="radio"]').change(function () {
-		if ($(this).is(':checked')) {
-			if (this.id === 'radio1') {
-				showOnlineDivs();
-				showOfflineDivs();
+
+		$('input[type="radio"]').change(function () {
+			if ($(this).is(':checked')) {
+				if (this.id === 'radio1') {
+					showOnlineDivs();
+					showOfflineDivs();
+				}
+				if (this.id === 'radio2') {
+					showOnlineDivs();
+					hideOfflineDivs();
+				}
+				if (this.id === 'radio3') {
+					showOfflineDivs();
+					hideOnlineDivs();
+				}
 			}
-			if (this.id === 'radio2') {
-				showOnlineDivs();
-				hideOfflineDivs();
-			}
-			if (this.id === 'radio3') {
-				showOfflineDivs();
-				hideOnlineDivs();
-			}
-		}
-	});
+		});
+	
 
 	/*  */
 	var filterChannelList = function (userInput) {
 		var elementRefs = document.getElementById('response-area').children;
 		var assembleFilter = '^(' + userInput + ')';
 		var filter = new RegExp(assembleFilter, 'i');
+		if (keystrokeCountPrevious > keystrokeCount) {
+			for (var i = 0; i < undoFilteredChannels.length; i += 1) {
+				undoFilteredChannels[i].style.display = 'flex';
+			}
+		}
 		for (var element in elementRefs) {
 			if (elementRefs.hasOwnProperty(element)) {
 				if (!$.isNumeric(element)) {
-					if (keystrokeCountPrevious > keystrokeCount) {
-						for (var i = 0; i < undoFilteredChannels.length; i += 1) {
-							undoFilteredChannels[i].style.display = 'flex';
-						}
-					}
 					if (!element.match(filter) && elementRefs[element].style.display !== 'none') {
 						elementRefs[element].style.display = 'none';
 						undoFilteredChannels.push(elementRefs[element]);
