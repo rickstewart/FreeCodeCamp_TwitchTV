@@ -12,6 +12,9 @@
 function twitchTvMain() {
 	var channels = ['FreeCodeCamp', 'storbeck', 'StreamerHouse', 'terakilobyte', 'noobs2ninjas', 'monstercat',
 		'habathcx', 'RobotCaleb', 'thomasBallinger', 'beohoff', 'MedryBW', 'riotgames', 'brunofin'];
+	var undoFilteredChannels = [];
+	var keystrokeCount = 0;
+	var keystrokeCountPrevious = 0;
 
 	/* function refreshChannelData() calls queryChannelByJsonp() once for each channel being tracked. */
 	var refreshChannelData = function () {
@@ -141,22 +144,36 @@ function twitchTvMain() {
 	/*  */
 	var filterChannelList = function (userInput) {
 		var elementRefs = document.getElementById('response-area').children;
-		var builtFilterTerm = '/\b' + userInput + '/';
-		var filterTerm = new RegExp(builtFilterTerm, 'gi');
+		var assembleFilter = '^(' + userInput + ')';
+		var filter = new RegExp(assembleFilter, 'i');
 		for (var element in elementRefs) {
-			//if (elementRefs.hasOwnProperty(element)) {
-			//	if(!element.match(filterTerm)) {
-			//		element.style.display = 'none';
-			//	}
-			//}
-			console.log(element);}
-
+			if (elementRefs.hasOwnProperty(element)) {
+				if (!$.isNumeric(element)) {
+					if (keystrokeCountPrevious > keystrokeCount) {
+						for (var i = 0; i < undoFilteredChannels.length; i += 1) {
+							undoFilteredChannels[i].style.display = 'flex';
+						}
+					}
+					if (!element.match(filter) && elementRefs[element].style.display !== 'none') {
+						elementRefs[element].style.display = 'none';
+						undoFilteredChannels.push(elementRefs[element]);
+					}
+				}
+			}
+		}
 	};
 
 	$('input[id="search-box"]').keyup(function () {
+		keystrokeCountPrevious = keystrokeCount;
+		keystrokeCount = $('#search-box').val().length;
 		var userInput = $('#search-box').val();
 		filterChannelList(userInput);
 	});
+
+	//$('input[id="search-box"]').keyup(function () {
+	//	var userInput = $('#search-box').val();
+	//	filterChannelList(userInput);
+	//});
 
 	/* run initial TwitchTV queries  */
 	refreshChannelData();
