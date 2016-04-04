@@ -134,7 +134,7 @@ a:active {
 }
 
 #form-area {
-    margin-top: 228px;
+    margin-top: 190px;
     width: 100%
 }
 
@@ -161,10 +161,11 @@ form {
     clear: both;
     margin: 10px 0 0 30px;
     padding:10px;
-    flex-direction: column;
     width: 210px;
-    height: 150px;
+    height: 130px;
     border: solid 0 red;
+    display: inline-block;
+    vertical-align: top;
 }
 
 label {
@@ -231,6 +232,25 @@ input[type="radio"]:focus ~ label:before {
     box-shadow: 0 0 0 3px #999;
 }
 
+#refresh-wrapper {
+    display: inline-block;
+    vertical-align: top;
+}
+#refresh-wrapper p {
+    display: block;
+    color: #3F3F3A;
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 1.1em;
+    font-weight: 700;
+    margin: 14px 0 0 26px;
+}
+
+#refresh-timer {
+    display: block;
+    width: 100px;
+    margin: -6px 0 0 38px;
+}
+
 #response-area {
     border: solid 0 black;
     margin-top: 20px;
@@ -277,5 +297,6 @@ img.statusImage {
 }
 
 .response:hover {
-    background-color: #eef287;
+    border: solid 3px #bf2bff;
+    color: yellow;
 }

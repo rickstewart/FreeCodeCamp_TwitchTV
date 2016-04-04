@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
   <!-- Optional Theme - MAY WANT TO REMOVE AS DOESN'T ALWAYS LOOK GOOD FOR ALL SITES -->
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+  <link href="JQuery-Plugins/TimeCircles/inc/TimeCircles.css" rel="stylesheet">
   <link rel="stylesheet" href="css/main.css">
   <script src="js/prefixfree.min.js" type="application/javascript"></script>
   <!-- Optional IE8 Support  ( ONLY USE IF IE8 SUPPORT NEEDED ) -->
@@ -38,6 +39,7 @@
         <input id="search-box" type="text" placeholder="Search Twitch Channels..." required>
       </form>
     </div> <!-- end form-area -->
+    <div>
     <div id="channel-select-area">
     <div>
       <input type="radio" name="radio" id="radio1" checked/>
@@ -51,13 +53,19 @@
       <input type="radio" name="radio" id="radio3" />
       <label for="radio3">Offline Channels</label>
     </div>
-  </div> <!-- end button-area -->
-    <div id="response-area">
+  </div> <!-- end channel-select-area -->
+    <div id="refresh-wrapper">
+      <p>Refreshes In:</p>
+      <div id="refresh-timer" data-timer="60"></div>
+    </div>
+      </div>
+    <div id="response-area" class="area-wrapper"></div>
     </div><!-- end response-area -->
   </div> <!-- end main-container -->
 </div> <!-- end page-wrapper -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="JQuery-Plugins/TimeCircles/inc/TimeCircles.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>
