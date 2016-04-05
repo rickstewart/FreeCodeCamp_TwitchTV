@@ -1,68 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-  <!-- Optional Theme - MAY WANT TO REMOVE AS DOESN'T ALWAYS LOOK GOOD FOR ALL SITES -->
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
-  <link href="JQuery-Plugins/TimeCircles/inc/TimeCircles.css" rel="stylesheet">
-  <link rel="stylesheet" href="css/main.css">
-  <script src="js/prefixfree.min.js" type="application/javascript"></script>
-  <!-- Optional IE8 Support  ( ONLY USE IF IE8 SUPPORT NEEDED ) -->
-  <!--[if lt IE 9]>
-  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-  <![endif]-->
-  <title>TwitchTV Channel Tracker</title>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+	<!-- Optional Theme - MAY WANT TO REMOVE AS DOESN'T ALWAYS LOOK GOOD FOR ALL SITES -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap-theme.min.css">
+	<link href="JQuery-Plugins/TimeCircles/inc/TimeCircles.css" rel="stylesheet">
+	<link rel="stylesheet" href="css/main.css">
+	<script src="js/prefixfree.min.js" type="application/javascript"></script>
+	<!-- Optional IE8 Support  ( ONLY USE IF IE8 SUPPORT NEEDED ) -->
+	<!--[if lt IE 9]>
+	<script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+	<script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+	<![endif]-->
+	<title>TwitchTV Channel Tracker</title>
 </head>
 <body>
 <div id="page-wrapper">
-  <header>
+	<header>
     <span id="header-span-left">
       <a href="https://www.twitch.tv/" target="_blank">
-        <img src="./images/twitch_header.png">
-      </a>
+				<img src="./images/twitch_header.png">
+			</a>
     </span>
     <span id="header-span-right">
       <div id="header-text1"><p>A FreeCodeCamp Zipline</p></div>
       <div id="header-text2"><p>Twitch TV Channel Tracker</p></div>
       <div id="header-about">
-        <a href="https://www.freecodecamp.com/challenges/use-the-twitchtv-json-api" target="_blank">about</a>
-      </div>
+				<a href="https://www.freecodecamp.com/challenges/use-the-twitchtv-json-api" target="_blank">about</a>
+			</div>
     </span>
-  </header>
-  <div id="main-container">
-    <div id="form-area">
-      <form>
-        <input id="search-box" type="text" placeholder="Search Twitch Channels..." required>
-      </form>
-    </div> <!-- end form-area -->
-    <div>
-    <div id="channel-select-area">
-    <div>
-      <input type="radio" name="radio" id="radio1" checked/>
-      <label for="radio1">All Channels</label>
-    </div>
-    <div>
-      <input type="radio" name="radio" id="radio2" />
-      <label for="radio2">Online Channels</label>
-    </div>
-    <div>
-      <input type="radio" name="radio" id="radio3" />
-      <label for="radio3">Offline Channels</label>
-    </div>
-  </div> <!-- end channel-select-area -->
-    <div id="refresh-wrapper">
-      <p>Refreshes In:</p>
-      <div id="refresh-timer" data-timer="60"></div>
-    </div>
-      </div>
-    <div id="response-area" class="area-wrapper"></div>
-    </div><!-- end response-area -->
-  </div> <!-- end main-container -->
-</div> <!-- end page-wrapper -->
+	</header>
+	<div id="main-container">
+		<div id="form-area">
+			<form>
+				<input id="search-box" type="text" placeholder="Search Twitch Channels..." required>
+			</form>
+		</div> <!-- end form-area -->
+		<div id="channel-select-timer-wrapper">
+			<div id="channel-select-area">
+				<div>
+					<input type="radio" name="radio" id="radio1" checked/>
+					<label for="radio1">All Channels</label>
+				</div>
+				<div>
+					<input type="radio" name="radio" id="radio2"/>
+					<label for="radio2">Online Channels</label>
+				</div>
+				<div>
+					<input type="radio" name="radio" id="radio3"/>
+					<label for="radio3">Offline Channels</label>
+				</div>
+			</div> <!-- end channel-select-area -->
+			<div id="refresh-wrapper">
+				<p>Refreshes In:</p>
+
+				<div id="refresh-timer" data-timer="60"></div>
+			</div> <!-- end refresh-wrapper -->
+		</div> <!-- end channel-select-timer-wrapper -->
+		<div id="response-area" class="area-wrapper">
+		</div><!-- end response-area -->
+	</div> <!-- end main-container -->
+</div>  <!-- end page-wrapper -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="JQuery-Plugins/TimeCircles/inc/TimeCircles.js"></script>
