@@ -15,6 +15,7 @@ function twitchTvMain() {
 	var undoFilteredChannels = [];
 	var keystrokeCount = 0;
 	var keystrokeCountPrevious = 0;
+	var currentRadioButton = 'radio1';
 
 	/* function refreshChannelData() calls queryChannelByJsonp() once for each channel being tracked. */
 	var refreshChannelData = function () {
@@ -130,14 +131,17 @@ function twitchTvMain() {
 			if (this.id === 'radio1') {
 				showOnlineDivs();
 				showOfflineDivs();
+				currentRadioButton = 'radio1';
 			}
 			if (this.id === 'radio2') {
 				showOnlineDivs();
 				hideOfflineDivs();
+				currentRadioButton = 'radio2';
 			}
 			if (this.id === 'radio3') {
 				showOfflineDivs();
 				hideOnlineDivs();
+				currentRadioButton = 'radio2';
 			}
 		}
 	});
@@ -167,19 +171,20 @@ function twitchTvMain() {
 	};
 
 	$('input[id="search-box"]').keyup(function () {
-		keystrokeCountPrevious = keystrokeCount;
-		keystrokeCount = $('#search-box').val().length;
 		var userInput = $('#search-box').val();
+		keystrokeCountPrevious = keystrokeCount;
+		keystrokeCount = userInput.length;
 		filterChannelList(userInput);
 	});
 
 	$('#response-area').click(function (e) {
+		var channelID = '';
 		if ($(e.target).parent().closest('div').attr('class').indexOf('response') !== -1) {
-			var channelID = $(e.target).parent().closest('div').attr('id');     // finds the id of the div.
+			channelID = $(e.target).parent().closest('div').attr('id');     // finds the id of the div.
 			window.open('https:www.twitch.tv/' + channelID); // get channel
 		}
 		else if ($(e.target).closest('div').attr('class').indexOf('response') !== -1) {   // else selects border area around text.
-			var channelID = $(e.target).closest('div').attr('id');
+			channelID = $(e.target).closest('div').attr('id');
 			window.open('https:www.twitch.tv/' + channelID); // get channel
 		}
 	});
@@ -204,8 +209,11 @@ function twitchTvMain() {
 		if (total === 0) {
 			$('#response-area').empty();
 			refreshChannelData();
-			$('input[type="radio"]').trigger();
 			$('#refresh-timer').TimeCircles().restart();
+			$('#radio4').prop('checked', true);
+			setInterval(function() {
+				$('#' + currentRadioButton).prop('checked', true);
+			}, 2000);
 		}
 	});
 
