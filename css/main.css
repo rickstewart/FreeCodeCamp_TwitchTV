@@ -27,6 +27,7 @@ html {
 	font-size: 100%;
 	height: auto !important;
 	height: 100%;
+	min-height: 1400px;
 	-webkit-text-size-adjust: 100%;
 	-ms-text-size-adjust: 100%;
 }
@@ -238,19 +239,24 @@ input[type="radio"]:focus ~ label:before {
 	vertical-align: top;
 }
 
+#refresh-wrapper input {
+	display: inline-block;
+	margin-left: 26px;
+}
+
 #refresh-wrapper p {
-	display: block;
+	display: inline-block;
 	color: #3F3F3A;
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 	font-size: 1.1em;
 	font-weight: 700;
-	margin: 14px 0 0 26px;
+	margin: 18px 0 0 4px;
 }
 
 #refresh-timer {
 	display: block;
-	width: 100px;
-	margin: -6px 0 0 38px;
+	width: 94px;
+	margin: -6px 0 0 42px;
 }
 
 #response-area {
@@ -299,6 +305,6 @@ img.statusImage {
 }
 
 .response:hover {
-	border: solid 3px #bf2bff;
+	border: solid 3px #4DCB6D;
 	color: yellow;
 }
