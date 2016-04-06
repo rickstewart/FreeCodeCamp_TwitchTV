@@ -141,7 +141,7 @@ function twitchTvMain() {
 			if (this.id === 'radio3') {
 				showOfflineDivs();
 				hideOnlineDivs();
-				currentRadioButton = 'radio2';
+				currentRadioButton = 'radio3';
 			}
 		}
 	});
