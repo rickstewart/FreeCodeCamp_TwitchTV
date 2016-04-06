@@ -211,8 +211,10 @@ function twitchTvMain() {
 			refreshChannelData();
 			$('#refresh-timer').TimeCircles().restart();
 			$('#radio4').prop('checked', true);
+			$('#radio4').click();
 			setInterval(function() {
 				$('#' + currentRadioButton).prop('checked', true);
+				$('#' + currentRadioButton).click();
 			}, 2000);
 		}
 	});
