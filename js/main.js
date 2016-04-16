@@ -16,6 +16,7 @@ function twitchTvMain() {
 	var keystrokeCount = 0;
 	var keystrokeCountPrevious = 0;
 	var currentRadioButton = 'radio1';
+	var autoRefreshCheckbox = document.getElementById('auto-refresh-checkbox');
 
 	/* function refreshChannelData() calls queryChannelByJsonp() once for each channel being tracked. */
 	var refreshChannelData = function () {
@@ -126,25 +127,28 @@ function twitchTvMain() {
 	}
 
 
-	$('input[type="radio"]').change(function () {
-		if ($(this).is(':checked')) {
-			if (this.id === 'radio1') {
-				showOnlineDivs();
-				showOfflineDivs();
-				currentRadioButton = 'radio1';
+
+		$('input[type="radio"]').change(function () {
+			if ($(this).is(':checked')) {
+				if (this.id === 'radio1') {
+					showOnlineDivs();
+					showOfflineDivs();
+					currentRadioButton = 'radio1';
+				}
+				if (this.id === 'radio2') {
+					showOnlineDivs();
+					hideOfflineDivs();
+					currentRadioButton = 'radio2';
+				}
+				if (this.id === 'radio3') {
+					showOfflineDivs();
+					hideOnlineDivs();
+					currentRadioButton = 'radio3';
+				}
 			}
-			if (this.id === 'radio2') {
-				showOnlineDivs();
-				hideOfflineDivs();
-				currentRadioButton = 'radio2';
-			}
-			if (this.id === 'radio3') {
-				showOfflineDivs();
-				hideOnlineDivs();
-				currentRadioButton = 'radio3';
-			}
-		}
-	});
+		});
+
+
 
 
 	/*  */
@@ -171,6 +175,9 @@ function twitchTvMain() {
 	};
 
 	$('input[id="search-box"]').keyup(function () {
+		if(autoRefreshCheckbox.checked) {
+
+		}
 		var userInput = $('#search-box').val();
 		keystrokeCountPrevious = keystrokeCount;
 		keystrokeCount = userInput.length;
@@ -189,6 +196,15 @@ function twitchTvMain() {
 		}
 	});
 
+	$('input[id="auto-refresh-checkbox"]').change(
+			function(){
+				if ($(this).is(':checked')) {
+					$('#refresh-timer').TimeCircles().restart();
+				}
+				else {
+					$('#refresh-timer').TimeCircles().stop();
+				}
+			});
 
 	$('#refresh-timer').TimeCircles({
 		time: {
@@ -204,21 +220,29 @@ function twitchTvMain() {
 			Seconds: {
 				color: '#4DCB6D'
 			}
-		}
+		},
+		start: false
 	}).addListener(function (unit, amount, total) {
-		if (total === 0) {
+		if (total === 0  && autoRefreshCheckbox.checked) {
 			$('#response-area').empty();
 			refreshChannelData();
 			$('#refresh-timer').TimeCircles().restart();
-			$('#radio4').prop('checked', true);
-			$('#radio4').click();
 			setInterval(function() {
-				$('#' + currentRadioButton).prop('checked', true);
-				$('#' + currentRadioButton).click();
-			}, 2000);
+				if (currentRadioButton === 'radio1') {
+					showOnlineDivs();
+					showOfflineDivs();
+				}
+				else if (currentRadioButton === 'radio2') {
+					showOnlineDivs();
+					hideOfflineDivs();
+				}
+				else {
+					showOfflineDivs();
+					hideOnlineDivs();
+				}
+			}, 400);
 		}
 	});
-
 
 	/* run initial TwitchTV queries  */
 	refreshChannelData();

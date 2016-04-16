@@ -107,6 +107,7 @@ header img {
 	text-align: right;
 	padding-right: 6%;
 	text-decoration: underline;
+	font-size: 0.9em;
 }
 
 a:link {
@@ -145,6 +146,10 @@ form {
 	left: 30px;
 	width: 520px;
 	border-radius: 16px;
+}
+
+.alert {
+	display: none;
 }
 
 #search-box {
@@ -248,7 +253,7 @@ input[type="radio"]:focus ~ label:before {
 	display: inline-block;
 	color: #3F3F3A;
 	font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-	font-size: 1.1em;
+	font-size: 0.9em;
 	font-weight: 700;
 	margin: 18px 0 0 4px;
 }
@@ -305,6 +310,11 @@ img.statusImage {
 }
 
 .response:hover {
+	Background-color: rgb(99, 54, 165);
 	border: solid 3px #4DCB6D;
-	color: yellow;
+	color: darkorange;
 }
+.response:hover img {
+	border: 1px solid rgb(99, 54, 165);
+}
+
