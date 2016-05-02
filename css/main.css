@@ -314,6 +314,7 @@ img.statusImage {
 	border: solid 3px #4DCB6D;
 	color: darkorange;
 }
+
 .response:hover img {
 	border: 1px solid rgb(99, 54, 165);
 }

@@ -17,6 +17,7 @@ function twitchTvMain() {
 	var keystrokeCountPrevious = 0;
 	var currentRadioButton = 'radio1';
 	var autoRefreshCheckbox = document.getElementById('auto-refresh-checkbox');
+	var asyncResponseCounter = 0;
 
 	/* function refreshChannelData() calls queryChannelByJsonp() once for each channel being tracked. */
 	var refreshChannelData = function () {
@@ -77,6 +78,7 @@ function twitchTvMain() {
 	function displayUpdateResults(channel, channelData) {
 		var $div = $('<div>', {id: channel, class: 'response ' + channelData.status});
 		var channelStatus;
+		asyncResponseCounter = asyncResponseCounter + 1;   // used in TimeCircles() - tracks number of responses to channel queries.
 		$('#response-area').append($div);
 		if (channelData.status === 'online') {
 			channelStatus = '<img src="./images/online.png" class="statusImage">';
@@ -127,28 +129,28 @@ function twitchTvMain() {
 	}
 
 
-
-		$('input[type="radio"]').change(function () {
-			if ($(this).is(':checked')) {
-				if (this.id === 'radio1') {
-					showOnlineDivs();
-					showOfflineDivs();
-					currentRadioButton = 'radio1';
-				}
-				if (this.id === 'radio2') {
-					showOnlineDivs();
-					hideOfflineDivs();
-					currentRadioButton = 'radio2';
-				}
-				if (this.id === 'radio3') {
-					showOfflineDivs();
-					hideOnlineDivs();
-					currentRadioButton = 'radio3';
-				}
+	$('input[type="radio"]').change(function () {
+		if ($(this).is(':checked')) {
+			if (this.id === 'radio1') {
+				showOnlineDivs();
+				showOfflineDivs();
+				currentRadioButton = 'radio1';
+				console.log('radio1');
 			}
-		});
-
-
+			if (this.id === 'radio2') {
+				showOnlineDivs();
+				hideOfflineDivs();
+				currentRadioButton = 'radio2';
+				console.log('radio2');
+			}
+			if (this.id === 'radio3') {
+				showOfflineDivs();
+				hideOnlineDivs();
+				currentRadioButton = 'radio3';
+				console.log('radio3');
+			}
+		}
+	});
 
 
 	/*  */
@@ -175,13 +177,20 @@ function twitchTvMain() {
 	};
 
 	$('input[id="search-box"]').keyup(function () {
-		if(autoRefreshCheckbox.checked) {
-
+		if (!autoRefreshCheckbox.checked) {
+			var userInput = $('#search-box').val();
+			keystrokeCountPrevious = keystrokeCount;
+			keystrokeCount = userInput.length;
+			filterChannelList(userInput);
 		}
-		var userInput = $('#search-box').val();
-		keystrokeCountPrevious = keystrokeCount;
-		keystrokeCount = userInput.length;
-		filterChannelList(userInput);
+		else {
+			$('input[id="search-box"]').val('');
+			$('.alert').css('display', 'block');
+		}
+	});
+
+	$('input[id="auto-refresh-checkbox"]').change(function () {
+		$('input[id="search-box"]').val('');
 	});
 
 	$('#response-area').click(function (e) {
@@ -197,13 +206,20 @@ function twitchTvMain() {
 	});
 
 	$('input[id="auto-refresh-checkbox"]').change(
-			function(){
+			function () {
+				console.log('Auto refresh Box Change');
 				if ($(this).is(':checked')) {
 					$('#refresh-timer').TimeCircles().restart();
 				}
 				else {
 					$('#refresh-timer').TimeCircles().stop();
+					$('.alert').css('display', 'none');
 				}
+			});
+
+	$('.close').click(
+			function () {
+				$('.alert').css('display', 'none');
 			});
 
 	$('#refresh-timer').TimeCircles({
@@ -223,22 +239,36 @@ function twitchTvMain() {
 		},
 		start: false
 	}).addListener(function (unit, amount, total) {
-		if (total === 0  && autoRefreshCheckbox.checked) {
+		var allowCheck = true;
+		console.log('unit: ' + unit + ' amount: ' + amount + ' total: ' + total);
+		if (total === 0 && autoRefreshCheckbox.checked) {
+			$('input[id="search-box"]').val('');
+			console.log('Time Circles Total equals zero and auto refresh checkbox checked');
 			$('#response-area').empty();
 			refreshChannelData();
 			$('#refresh-timer').TimeCircles().restart();
-			setInterval(function() {
-				if (currentRadioButton === 'radio1') {
+			setInterval(function () {
+				if(asyncResponseCounter === channels.length) {allowCheck = true;}
+				if (allowCheck === true && currentRadioButton === 'radio1') {
 					showOnlineDivs();
 					showOfflineDivs();
+					asyncResponseCounter = 0;
+					allowCheck = false;
+					console.log('Clock Radio 1');
 				}
-				else if (currentRadioButton === 'radio2') {
+				else if (allowCheck === true && currentRadioButton === 'radio2') {
 					showOnlineDivs();
 					hideOfflineDivs();
+					asyncResponseCounter = 0;
+					allowCheck = false;
+					console.log('Clock Radio 2');
 				}
-				else {
+				else if(allowCheck === true ) {
 					showOfflineDivs();
 					hideOnlineDivs();
+					asyncResponseCounter = 0;
+					allowCheck = false;
+					console.log('Clock Radio 3');
 				}
 			}, 400);
 		}
