@@ -8,6 +8,8 @@
  * @param data.logo
  *
  */
+
+
 'use strict';
 function twitchTvMain() {
 	var channels = ['FreeCodeCamp', 'storbeck', 'GamingLive_TV1', 'terakilobyte', 'noobs2ninjas', 'monstercat',
@@ -15,21 +17,23 @@ function twitchTvMain() {
 	var undoFilteredChannels = [];
 	var keystrokeCount = 0;
 	var keystrokeCountPrevious = 0;
-	var currentRadioButton = 'radio1';
+	var currentRadioButton = 'radio1';   // default clicked radio button 'radio1" - All Channels.
 	var autoRefreshCheckbox = document.getElementById('auto-refresh-checkbox');
-	var asyncResponseCounter = 0;
+	var channelsRespondCount = channels.length;  // to store how many Twitch channels received a response back.
+
 
 	/* function refreshChannelData() calls queryChannelByJsonp() once for each channel being tracked. */
-	var refreshChannelData = function () {
-		channels.map(function (channel) {   // for each channel being followed.
+	function refreshChannelData() {
+		channels.map(function (channel) {   // for each Twitch channel being followed.
 			queryChannelByJsonp(channel);
 		});
-	};
+	}
+
 
 	/* function parseResponse() is passed the data from a TwitchTV channel query and determines the channel
 	 * state ( ie. online, offline, unavailable ) and if online it captures a channel description summary.
 	 * Lastly it returns the gathered information as an object. */
-	var parseResponse = function (channelResponse) {
+	function parseResponse(channelResponse) {
 		if (channelResponse.status === 422) {
 			return {'message': 'Twitch account is Closed', 'status': 'offline'};
 		}
@@ -39,7 +43,8 @@ function twitchTvMain() {
 		else {
 			return {'message': channelResponse.stream.channel.status, 'status': 'online'};
 		}
-	};
+	}
+
 
 	/* function queryChannelByJsonp() is passed a TwitchTV channel name, performs a JSON-P query of that
 	 * channel, and upon success returns TwitchTV's response, or on an error message upon a failure. The
@@ -73,12 +78,25 @@ function twitchTvMain() {
 				});
 	}
 
+
+	/*   */
+	function addToChannelQueryResponse() {
+		channelsRespondCount = channelsRespondCount + 1;   // used in TimeCircles() - tracks number of responses back from channel queries.
+	}
+
+
+	/*   */
+	function getChannelQueryResponses() {
+		return channelsRespondCount;
+	}
+
+
 	/* function displayUpdateResults() formats the result of a channel query and outputs the information
 	 * to the webpage. */
 	function displayUpdateResults(channel, channelData) {
 		var $div = $('<div>', {id: channel, class: 'response ' + channelData.status});
 		var channelStatus;
-		asyncResponseCounter = asyncResponseCounter + 1;   // used in TimeCircles() - tracks number of responses to channel queries.
+		addToChannelQueryResponse();
 		$('#response-area').append($div);
 		if (channelData.status === 'online') {
 			channelStatus = '<img src="./images/online.png" class="statusImage">';
@@ -92,6 +110,8 @@ function twitchTvMain() {
 		$(str).appendTo('#' + channel);
 	}
 
+
+	/*  */
 	function hideOfflineDivs() {
 		var offlineDivs = document.getElementById('response-area').getElementsByClassName('offline');
 		for (var prop in offlineDivs) {
@@ -101,6 +121,8 @@ function twitchTvMain() {
 		}
 	}
 
+
+	/*  */
 	function hideOnlineDivs() {
 		var onlineDivs = document.getElementById('response-area').getElementsByClassName('online');
 		for (var prop in onlineDivs) {
@@ -110,6 +132,8 @@ function twitchTvMain() {
 		}
 	}
 
+
+	/*  */
 	function showOfflineDivs() {
 		var offlineDivs = document.getElementById('response-area').getElementsByClassName('offline');
 		for (var prop in offlineDivs) {
@@ -119,6 +143,8 @@ function twitchTvMain() {
 		}
 	}
 
+
+	/*  */
 	function showOnlineDivs() {
 		var onlineDivs = document.getElementById('response-area').getElementsByClassName('online');
 		for (var prop in onlineDivs) {
@@ -129,32 +155,31 @@ function twitchTvMain() {
 	}
 
 
+	/*  */
 	$('input[type="radio"]').change(function () {
+		$('input[id="search-box"]').val('');
 		if ($(this).is(':checked')) {
 			if (this.id === 'radio1') {
 				showOnlineDivs();
 				showOfflineDivs();
 				currentRadioButton = 'radio1';
-				console.log('radio1');
 			}
 			if (this.id === 'radio2') {
 				showOnlineDivs();
 				hideOfflineDivs();
 				currentRadioButton = 'radio2';
-				console.log('radio2');
 			}
 			if (this.id === 'radio3') {
 				showOfflineDivs();
 				hideOnlineDivs();
 				currentRadioButton = 'radio3';
-				console.log('radio3');
 			}
 		}
 	});
 
 
 	/*  */
-	var filterChannelList = function (userInput) {
+	function filterChannelList(userInput) {
 		var elementRefs = document.getElementById('response-area').children;
 		var assembleFilter = '^(' + userInput + ')';
 		var filter = new RegExp(assembleFilter, 'i');
@@ -174,9 +199,12 @@ function twitchTvMain() {
 				}
 			}
 		}
-	};
+	}
 
+
+	/*  */
 	$('input[id="search-box"]').keyup(function () {
+		haltTimer();
 		if (!autoRefreshCheckbox.checked) {
 			var userInput = $('#search-box').val();
 			keystrokeCountPrevious = keystrokeCount;
@@ -189,10 +217,8 @@ function twitchTvMain() {
 		}
 	});
 
-	$('input[id="auto-refresh-checkbox"]').change(function () {
-		$('input[id="search-box"]').val('');
-	});
 
+	/*  */
 	$('#response-area').click(function (e) {
 		var channelID = '';
 		if ($(e.target).parent().closest('div').attr('class').indexOf('response') !== -1) {
@@ -205,9 +231,11 @@ function twitchTvMain() {
 		}
 	});
 
+	
+ /*  */
 	$('input[id="auto-refresh-checkbox"]').change(
 			function () {
-				console.log('Auto refresh Box Change');
+				$('input[id="search-box"]').val('');
 				if ($(this).is(':checked')) {
 					$('#refresh-timer').TimeCircles().restart();
 				}
@@ -217,11 +245,22 @@ function twitchTvMain() {
 				}
 			});
 
+	
+ /*  */
 	$('.close').click(
 			function () {
 				$('.alert').css('display', 'none');
 			});
 
+	
+	/*  */
+	function haltTimer() {
+		$('input[id="auto-refresh-checkbox"]').attr('checked', false);
+		$('#refresh-timer').TimeCircles().stop();
+	}
+
+
+	/*  */
 	$('#refresh-timer').TimeCircles({
 		time: {
 			Days: {
@@ -240,43 +279,41 @@ function twitchTvMain() {
 		start: false
 	}).addListener(function (unit, amount, total) {
 		var allowCheck = true;
-		console.log('unit: ' + unit + ' amount: ' + amount + ' total: ' + total);
 		if (total === 0 && autoRefreshCheckbox.checked) {
 			$('input[id="search-box"]').val('');
-			console.log('Time Circles Total equals zero and auto refresh checkbox checked');
 			$('#response-area').empty();
 			refreshChannelData();
 			$('#refresh-timer').TimeCircles().restart();
 			setInterval(function () {
-				if(asyncResponseCounter === channels.length) {allowCheck = true;}
+				if(getChannelQueryResponses() === channels.length) {allowCheck = true;}  // if all channel queries have been responded to.
 				if (allowCheck === true && currentRadioButton === 'radio1') {
 					showOnlineDivs();
 					showOfflineDivs();
-					asyncResponseCounter = 0;
+					channelsRespondCount = 0;
 					allowCheck = false;
-					console.log('Clock Radio 1');
 				}
 				else if (allowCheck === true && currentRadioButton === 'radio2') {
 					showOnlineDivs();
 					hideOfflineDivs();
-					asyncResponseCounter = 0;
+					channelsRespondCount = 0;
 					allowCheck = false;
-					console.log('Clock Radio 2');
 				}
 				else if(allowCheck === true ) {
 					showOfflineDivs();
 					hideOnlineDivs();
-					asyncResponseCounter = 0;
+					channelsRespondCount = 0;
 					allowCheck = false;
-					console.log('Clock Radio 3');
 				}
 			}, 400);
 		}
 	});
 
+
 	/* run initial TwitchTV queries  */
 	refreshChannelData();
 }
+
+
 /* Starts main program after webpage has loaded. */
 $(document).ready(function () {
 	twitchTvMain();
