@@ -78,6 +78,11 @@ function twitchTvMain() {
 	}
 
 
+	/* function recordRadioButtonClicked() tracks which radio button in the group is currently selected.*/
+	function recordRadioButtonClicked(button) {
+		currentRadioButton = button;
+	}
+
 	/* function parseResponse() is passed the data received back from a TwitchTV channel query and determines
 	 * the channel state ( ie. online, offline, unavailable ), and if online it captures a channel description
 	 * summary. Lastly it returns the gathered information as an object. */
@@ -192,23 +197,25 @@ function twitchTvMain() {
 	}
 
 
-	/*  */
+	/* JQuery selector selects the webpage radio buttons and attaches a Listener. The Listener fires on a change, then checks
+	 * if change was a button click. On a button click the passed in callback function tests to see which radio button was clicked
+	  * and then executes the appropriate code. This code hides and un-hides channel data as appropriate to the radio button.*/
 	$('input[type="radio"]').change(function () {
 		if ($(this).is(':checked')) {
-			if (this.id === 'radio1') {
-				showOnlineDivs();
-				showOfflineDivs();
-				currentRadioButton = 'radio1';
+			if (this.id === 'radio1') {                                               // test if 'radio1' button clicked. ( display all channels )
+				showOnlineDivs();                                                       // display all divs tagged as 'online'.
+				showOfflineDivs();                                                      // display all divs tagged as 'offline'.
+				recordRadioButtonClicked('radio1');                                     // update tracking of current radio button clicked.
 			}
-			if (this.id === 'radio2') {
-				showOnlineDivs();
-				hideOfflineDivs();
-				currentRadioButton = 'radio2';
+			if (this.id === 'radio2') {                                               // test if 'radio2' button clicked. ( display online channels )
+				showOnlineDivs();                                                       // display all divs tagged as 'online'.
+				hideOfflineDivs();                                                      // hide all divs tagged as 'offline'.
+				recordRadioButtonClicked('radio2');                                     // update tracking of current radio button clicked.
 			}
-			if (this.id === 'radio3') {
-				showOfflineDivs();
-				hideOnlineDivs();
-				currentRadioButton = 'radio3';
+			if (this.id === 'radio3') {                                               // test if 'radio3' button clicked. ( display offline channels )
+				showOfflineDivs();                                                      // display all divs tagged as 'offline'.
+				hideOnlineDivs();                                                       // hide all divs tagged as 'online'.
+				recordRadioButtonClicked('radio3');                                     // update tracking of current radio button clicked.
 			}
 		}
 	});
