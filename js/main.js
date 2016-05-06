@@ -70,6 +70,19 @@ function twitchTvMain() {
 	}
 
 
+	/* function setKeystrokeCountPrevious() updates the counter tracking the number of characters the user previously typed into
+	 * the Search box. */
+	function setKeystrokeCountPrevious(searchStringLength) {
+		keystrokeCountPrevious = searchStringLength;
+	}
+
+
+	/* function getKeystrokeCountPrevious() returns the number of characters the user previously typed into the Search box. */
+	function getKeystrokeCountPrevious() {
+		return keystrokeCountPrevious;
+	}
+
+
 	/* function refreshChannelData() calls queryChannelState() once for each Twitch channel being tracked. */
 	function refreshChannelData() {
 		channels.map(function (channel) {
@@ -197,6 +210,31 @@ function twitchTvMain() {
 	}
 
 
+	/* function filterChannelList() takes the user's search string as an argument and builds the Regex expression from that to
+	 * filter the names of the currently displayed Twitch channels so that only channels matching the search string remain. */
+	function filterChannelList(userInput) {
+		var elementRefs = document.getElementById('response-area').children;        // grab reference to each Twitch channel's output both visible and hidden.
+		var assembledFilter = '^(' + userInput + ')';                               // build a filter expression using user's input.
+		var filter = new RegExp(assembledFilter, 'i');                              // use filter expression to instantiate a new Regex object.
+		if (getKeystrokeCountPrevious() > getKeystrokeCount()) {                    // test if user added new char or deleted last added char to search string.
+			for (var i = 0; i < undoFilteredChannels.length; i += 1) {                // if char was deleted, restore display to unfiltered state.
+				undoFilteredChannels[i].style.display = 'flex';
+			}
+			$('input[type="radio"]').trigger('change');                               // force radio button check which updates display per button selected.
+		}
+		for (var element in elementRefs) {                                          // iterate over collection of channel properties.
+			if (elementRefs.hasOwnProperty(element)) {                                // make sure property is 'direct', not inherited.
+				if (!$.isNumeric(element)) {                                            // make sure property is not a number.
+					if (!element.match(filter) && elementRefs[element].style.display !== 'none') {  // test property no match to Regex filter, nor already hidden.
+						elementRefs[element].style.display = 'none';                        // hide channel in webpage.
+						undoFilteredChannels.push(elementRefs[element]);                    // add channel to collection tracking filtered out (hidden) channels.
+					}
+				}
+			}
+		}
+	}
+
+
 	/* JQuery selector selects the webpage radio buttons and attaches a Listener. The Listener fires on a change, then checks
 	 * if change was a button click. On a button click the passed in callback function tests to see which radio button was clicked
 	  * and then executes the appropriate code. This code hides and un-hides channel data as appropriate to the radio button.*/
@@ -221,56 +259,31 @@ function twitchTvMain() {
 	});
 
 
-	/*  */
-	function filterChannelList(userInput) {
-		var elementRefs = document.getElementById('response-area').children;
-		var assembleFilter = '^(' + userInput + ')';
-		var filter = new RegExp(assembleFilter, 'i');
-		if (keystrokeCountPrevious > getKeystrokeCount()) {
-			for (var i = 0; i < undoFilteredChannels.length; i += 1) {
-				undoFilteredChannels[i].style.display = 'flex';
-			}
-			$('input[type="radio"]').trigger('change');
-		}
-		for (var element in elementRefs) {
-			if (elementRefs.hasOwnProperty(element)) {
-				if (!$.isNumeric(element)) {
-					if (!element.match(filter) && elementRefs[element].style.display !== 'none') {
-						elementRefs[element].style.display = 'none';
-						undoFilteredChannels.push(elementRefs[element]);
-					}
-				}
-			}
-		}
-	}
-
-
-	/*  */
+	/* JQuery selector selects the webpage search box and attaches a Listener. The Listener fires on a character being typed
+	 * into the search box ( or a char being deleted ). If the Auto Refresh timer is running, it is halted. The new user
+	  * search string is fetched and sent on to filterChannelList(). */
 	$('input[id="search-box"]').keyup(function () {
-		haltTimer();
-		if (!autoRefreshCheckbox.checked) {
-			var userInput = $('#search-box').val();
-			keystrokeCountPrevious = getKeystrokeCount();
-			setKeystrokeCount(userInput.length);
-			filterChannelList(userInput);
-		}
-		else {
-			$('input[id="search-box"]').val('');
-			$('.alert').css('display', 'block');
-		}
+		haltTimer();                                                                // if running, halt Auto Refresh timer.
+		var userInput = $('#search-box').val();                                     // get user search string input.
+		setKeystrokeCountPrevious(getKeystrokeCount());                             // update previous count for characters in search string.
+		setKeystrokeCount(userInput.length);                                        // update current count for characters in search string.
+		filterChannelList(userInput);                                               // send change in search string to filterChannelList().
 	});
 
 
-	/*  */
+	/* JQuery selector selects the Twitch channel information display area and attaches a Listener. The Listener fires when one of
+	* the displayed channels is clicked. The channel clicked is determined, and a new browser tab or window is spawned displaying
+	* the Twitch website containing that particular channel. Note that two cases exist for where the user could have clicked inside
+	* the channel display area, and both are checked. */
 	$('#response-area').click(function (e) {
 		var channelID = '';
-		if ($(e.target).parent().closest('div').attr('class').indexOf('response') !== -1) {
-			channelID = $(e.target).parent().closest('div').attr('id');     // finds the id of the div.
-			window.open('https:www.twitch.tv/' + channelID); // get channel
+		if ($(e.target).parent().closest('div').attr('class').indexOf('response') !== -1) {  // clickable area, case 1.
+			channelID = $(e.target).parent().closest('div').attr('id');               // finds the channel id of the selected div.
+			window.open('https:www.twitch.tv/' + channelID);                          // open Twitch website to that channel.
 		}
-		else if ($(e.target).closest('div').attr('class').indexOf('response') !== -1) {   // else selects border area around text.
-			channelID = $(e.target).closest('div').attr('id');
-			window.open('https:www.twitch.tv/' + channelID); // get channel
+		else if ($(e.target).closest('div').attr('class').indexOf('response') !== -1) {      // clickable area, case 2.
+			channelID = $(e.target).closest('div').attr('id');                        // finds the channel id of the selected div.
+			window.open('https:www.twitch.tv/' + channelID);                          // open Twitch website to that channel.
 		}
 	});
 
