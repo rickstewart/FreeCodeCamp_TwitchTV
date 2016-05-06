@@ -235,6 +235,13 @@ function twitchTvMain() {
 	}
 
 
+	/* function haltTimer() */
+	function haltTimer() {
+		$('input[id="auto-refresh-checkbox"]').attr('checked', false);
+		$('#refresh-timer').TimeCircles().stop();
+	}
+
+
 	/* JQuery selector selects the webpage radio buttons and attaches a Listener. The Listener fires on a change, then checks
 	 * if change was a button click. On a button click the passed in callback function tests to see which radio button was clicked
 	  * and then executes the appropriate code. This code hides and un-hides channel data as appropriate to the radio button.*/
@@ -288,33 +295,20 @@ function twitchTvMain() {
 	});
 
 	
- /*  */
+ /* JQuery selector selects the Auto Refresh checkbox and attaches a Listener. The Listener fires when the box is checked or
+ * unchecked. Checking the box starts the Refresh timer, and unchecking it stops the timer. Note that starting the Refresh timer
+ * clears the search box and restores display to pre-filtered state. */
 	$('input[id="auto-refresh-checkbox"]').change(
 			function () {
-				$('input[id="search-box"]').val('');
-				$('input[type="radio"]').trigger('change');
-				if ($(this).is(':checked')) {
-					$('#refresh-timer').TimeCircles().restart();
+				$('input[id="search-box"]').val('');                                    // clear the search box.
+				$('input[type="radio"]').trigger('change');                             // force radio button check which updates display per button selected.
+				if ($(this).is(':checked')) {                                           // test if Auto Refresh box was checked or unchecked.
+					$('#refresh-timer').TimeCircles().restart();                          // if checked, start the Auto refresh timer.
 				}
-				else {
-					$('#refresh-timer').TimeCircles().stop();
-					$('.alert').css('display', 'none');
+				else {                                                                  // else box was unchecked.
+					$('#refresh-timer').TimeCircles().stop();                             // stop the Auto refresh timer.
 				}
 			});
-
-	
- /*  */
-	$('.close').click(
-			function () {
-				$('.alert').css('display', 'none');
-			});
-
-	
-	/*  */
-	function haltTimer() {
-		$('input[id="auto-refresh-checkbox"]').attr('checked', false);
-		$('#refresh-timer').TimeCircles().stop();
-	}
 
 
 	/*  */
