@@ -342,17 +342,17 @@ function twitchTvMain() {
 			}
 		},
 		start: false                                                                // disable automatic timer start.
-	}).addListener(function (unit, amount, total) {
+	}).addListener(function (unit, amount, total) {                               // listens for clock ticks.
 		var allowCheck = true;                                                      // open interlock. ( prevents unnecessary display refresh ).
 		if (total === 0 && autoRefreshCheckbox.checked) {                           // timer has reached zero, and timer checkbox checked.
 			$('input[id="search-box"]').val('');                                      // clear search box.
 			$('#response-area').empty();                                              // clear channel display area of previous responses.
 			refreshChannelData();                                                     // query the Twitch servers for latest channel information.
-			startTimer();                                                             // start next countdown for the Refresh Timer.
+			startTimer();                                                             // restart countdown of Refresh Timer for next cycle.
 			setInterval(function () {                                                 // Interval timer gives Twitch servers time to respond.
-				if (getChannelQueryResponseCount() === getChannelsLength()) {
+				if (getChannelQueryResponseCount() === getChannelsLength()) {           // if all channel queries received reply, allow display to update.
 					allowCheck = true;
-				}  // if all channel queries received reply, allow display to update.
+				}
 				if (allowCheck === true && currentRadioButton === 'radio1') {           // refresh display case 1 - user selected button 'All Channels'.
 					showOnlineDivs();                                                     // display all divs tagged as 'online'.
 					showOfflineDivs();                                                    // display all divs tagged as 'offline'.
